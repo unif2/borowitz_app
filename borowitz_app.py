@@ -25,6 +25,9 @@ stop_words = ['i','me','my','myself','we','our','ours','ourselves','you','your',
 def load_borowitz():
     with open('final_borowitz.json', 'r') as fp:
         d = json.load(fp)
+def load_borowitz():
+    with open('final_borowitz.json', 'r') as fp:
+        d = json.load(fp)
     titles = []
     dates = []
     urls = []
