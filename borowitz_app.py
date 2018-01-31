@@ -22,11 +22,9 @@ stop_words = ['i','me','my','myself','we','our','ours','ourselves','you','your',
 	'should','now','d','ll','m','o','re','ve','y','ain','aren','couldn','didn','doesn','hadn','hasn','haven','isn','ma','mightn',
 	'mustn','needn','shan','shouldn','wasn','weren','won','wouldn','said','mr', 'obama', 'would', 'president']
 
-
 def load_borowitz():
-	with open('final_borowitz.json', 'r') as fp:
+    with open('final_borowitz.json', 'r') as fp:
         d = json.load(fp)
-
     titles = []
     dates = []
     urls = []
