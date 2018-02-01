@@ -150,12 +150,14 @@ def find_similar_borowitz(new_text):
 	return titles[i], urls[i], titles[j], urls[j], i, j
 
 def which_newspaper(text):
-	if text.startswith('https://www.nytimes') or text.startswith('http://www.nytimes'):
-		return get_nytimes_text(text)
-	elif text.startswith('https://www.theonion') or text.startswith('http://www.theonion'):
-		return get_onion_text(text)
-	else:
-		return text
+    start_nyt = ['https://www.nytimes.com', 'http://www.nytimes.com', 'www.nytimes.com', 'https://mobile.nytimes.com', 'http://mobile.nytimes.com']
+    http = ['http://', 'https://']
+    if any(text.startswith(beginning) for beginning in start_nyt):
+        return get_nytimes_text(text)
+    elif any(text.startswith(beginning) for beginning in http) and 'theonion.com' in text:
+        return get_onion_text(text)
+    else:
+        return text
 
 #def load_lda():
 #	file = open("lda2.pickle",'r')
