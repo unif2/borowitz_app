@@ -110,11 +110,11 @@ for article in d:
     article[3] = article[3].replace("(Satire from The Borowitz Report)", "")
     article[3] = article[3].replace('"', "").replace("'",'').replace('“','').replace('”','').replace("’",'').replace('-',' ').replace('--',' ').replace('—',' ').replace('…',' ')
 
-# If there are new articles, append the data to past_articles and write everything to json file
+# If there are new articles, prepend the data to past_articles and write everything to json file
 if d:
-    past_articles.append(d)
-    with open('final_borowitz.json', 'w') as fp:
-        json.dump(past_articles, fp)
+    d.extend(past_articles)
+    with open('/home/velocci/mysite/final_borowitz.json', 'w') as fp:
+        json.dump(d, fp)
     fp.close
 else:
     print('No new articles.')
