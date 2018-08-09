@@ -25,9 +25,6 @@ stop_words = ['i','me','my','myself','we','our','ours','ourselves','you','your',
 def load_borowitz():
     with open('final_borowitz.json', 'r') as fp:
         d = json.load(fp)
-def load_borowitz():
-    with open('final_borowitz.json', 'r') as fp:
-        d = json.load(fp)
     titles = []
     dates = []
     urls = []
@@ -37,78 +34,8 @@ def load_borowitz():
         titles.append(article[0])
         dates.append(article[1])
         urls.append(article[2])
-        article_text.append(article[3])    
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace('\xa0', u' ')
-        
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Get news satire from The Borowitz Report delivered to your inbox.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Get the Borowitz Report delivered to your inbox.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Get The Borowitz Report delivered to your inbox.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("(The Borowitz Report)", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("News Satire from The Borowitz Report", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Satire from The Borowitz Report", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("This post is news satire from The Borowitz Report.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("News satire from The Borowitz Report.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Andy Borowitz will be doing a free show at Rutgers University on Monday, October 29, at 7 P.M. To register for tickets, click here.    Photograph by Lauren Lancaster.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Andy Borowitz is doing a show to benefit public radio.","")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Tickets for Andy Borowitz's next live show are now on sale.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("(Satire from The Borowitz Report)", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Illustration by Andy Borowitz.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Andy Borowitz will be doing two shows at next month's New Yorker Festival: Friday, October 5th, with the storytelling group The Moth, and Saturday, October 6th, with Sarah Silverman. Ticket information here.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("A small number of tickets have just been released for Andy Borowitz's New Yorker Festival show this Friday night in New York City. Buy tickets here.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("(Satire from The Borowitz Report)", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Tickets for Andy Borowitz's next live show are now on sale.  Photograph by Alex Wong/Getty.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Tickets for Andy Borowitz's next live show are now on sale.      Illustration by Tom Bachtell.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Andy Borowitz will be doing two shows at next month's New Yorker Festival: Friday, October 5th, with the storytelling group The Moth, and Saturday, October 6th, with Sarah Silverman. Ticket information here.    Photograph by Tony Avelar/Bloomberg/Getty Images.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("(The Borowitz Report)", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("Tickets for Andy Borowitz's next live show are now on sale.  Photograph by Chris Maddaloni/CQ Roll Call.", "")
-
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace("(Satire from The Borowitz Report)", "")
-    for i in range(len(article_text)):
-        article_text[i] = article_text[i].replace('"', "").replace("'",'').replace('“','').replace('”','').replace("’",'').replace('-',' ').replace('--',' ').replace('—',' ').replace('…',' ')
+        article_text.append(article[3])
+    fp.close()
     return titles, dates, urls, article_text
 
 titles, dates, urls, article_text = load_borowitz()
@@ -172,6 +99,7 @@ def which_newspaper(text):
 #topics = [sorted(model.show_topic(i, topn=10), key=lambda x: x[1], reverse=True) [:10] for i in range(100)]
 file = open("final_stuff.pickle",'rb')
 lda_docs, topics = pickle.load(file)
+file.close()
 app = Flask(__name__)
 
 @app.route('/')
