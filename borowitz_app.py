@@ -55,7 +55,7 @@ def get_onion_text(page_url):
 def get_nytimes_text(page_url):
     page = urlopen(page_url)
     soup = BeautifulSoup(page, "html.parser")
-    stuff = soup.find_all("p", attrs={"class":"story-body-text story-content"})
+    stuff = soup.find_all("div", attrs={"class":"css-18sbwfn StoryBodyCompanionColumn"}) # Updated August 9, 2018
     article_text = ""
     for things in stuff:
         blah = things.text.strip()
