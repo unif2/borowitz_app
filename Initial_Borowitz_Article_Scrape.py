@@ -7,7 +7,7 @@ from urllib.request import urlopen
 sys.setrecursionlimit(100000)
 
 # Current number of pages of Borowitz Reports
-num_pages = 93
+num_pages = 94
 
 # First page
 base_url = 'https://www.newyorker.com/humor/borowitz-report'
@@ -39,12 +39,43 @@ for url in page_urls:
 
 print('Done.')
 
+# Clean up the article text for each article
+
+def article_clean(article):
+    article = article.replace('\xa0', u' ')
+    article = article.replace("Get news satire from The Borowitz Report delivered to your inbox.", "")
+    article = article.replace("Get the Borowitz Report delivered to your inbox.", "")
+    article = article.replace("Get The Borowitz Report delivered to your inbox.", "")
+    article = article.replace("(The Borowitz Report)", "")
+    article = article.replace("News Satire from The Borowitz Report", "")
+    article = article.replace("Satire from The Borowitz Report", "")
+    article = article.replace("This post is news satire from The Borowitz Report.", "")
+    article = article.replace("News satire from The Borowitz Report.", "")
+    article = article.replace("Andy Borowitz will be doing a free show at Rutgers University on Monday, October 29, at 7 P.M. To register for tickets, click here.    Photograph by Lauren Lancaster.", "")
+    article = article.replace("Andy Borowitz is doing a show to benefit public radio.","")
+    article = article.replace("Tickets for Andy Borowitz's next live show are now on sale.", "")
+    article = article.replace("(Satire from The Borowitz Report)", "")
+    article = article.replace("Illustration by Andy Borowitz.", "")
+    article = article.replace("Andy Borowitz will be doing two shows at next month's New Yorker Festival: Friday, October 5th, with the storytelling group The Moth, and Saturday, October 6th, with Sarah Silverman. Ticket information here.", "")
+    article = article.replace("A small number of tickets have just been released for Andy Borowitz's New Yorker Festival show this Friday night in New York City. Buy tickets here.", "")
+    article = article.replace("(Satire from The Borowitz Report)", "")
+    article = article.replace("Tickets for Andy Borowitz's next live show are now on sale.  Photograph by Alex Wong/Getty.", "")
+    article = article.replace("Tickets for Andy Borowitz's next live show are now on sale.      Illustration by Tom Bachtell.", "")
+    article = article.replace("Andy Borowitz will be doing two shows at next month's New Yorker Festival: Friday, October 5th, with the storytelling group The Moth, and Saturday, October 6th, with Sarah Silverman. Ticket information here.    Photograph by Tony Avelar/Bloomberg/Getty Images.", "")
+    article = article.replace("(The Borowitz Report)", "")
+    article = article.replace("Tickets for Andy Borowitz's next live show are now on sale.  Photograph by Chris Maddaloni/CQ Roll Call.", "")
+    article = article.replace("(Satire from The Borowitz Report)", "")
+    article = article.replace('"', " ").replace("'",'').replace('“',' ').replace('”',' ').replace("’",'').replace('-',' ').replace('--',' ').replace('—',' ').replace('…',' ')
+    article = "".join((char.lower() for char in article if char not in string.punctuation))
+    return article
+
 # This function scrapes the article text, article title, and article date for an article
 def text_scraper(link):
     url = 'https://www.newyorker.com'+link
     page = urlopen(url)
     soup = BeautifulSoup(page, "html.parser")
     article_text = soup.find("div", attrs={"id":"articleBody"}).text
+    article_text = article_clean(article_text)
     title = soup.find('title').text
     date = soup.find('p', attrs={'class':"ArticleTimestamp__timestamp___1klks "}).text
     return [title, date, url, article_text]
@@ -70,33 +101,6 @@ if not_scraped:
         print('Scraping stuff from link %s' %link)
         sleep(2)
         d.append(text_scraper(link))
-
-# Clean up the article text for each article
-for article in d:
-    article[3] = article[3].replace('\xa0', u' ')
-    article[3] = article[3].replace("Get news satire from The Borowitz Report delivered to your inbox.", "")
-    article[3] = article[3].replace("Get the Borowitz Report delivered to your inbox.", "")
-    article[3] = article[3].replace("Get The Borowitz Report delivered to your inbox.", "")
-    article[3] = article[3].replace("(The Borowitz Report)", "")
-    article[3] = article[3].replace("News Satire from The Borowitz Report", "")
-    article[3] = article[3].replace("Satire from The Borowitz Report", "")
-    article[3] = article[3].replace("This post is news satire from The Borowitz Report.", "")
-    article[3] = article[3].replace("News satire from The Borowitz Report.", "")
-    article[3] = article[3].replace("Andy Borowitz will be doing a free show at Rutgers University on Monday, October 29, at 7 P.M. To register for tickets, click here.    Photograph by Lauren Lancaster.", "")
-    article[3] = article[3].replace("Andy Borowitz is doing a show to benefit public radio.","")
-    article[3] = article[3].replace("Tickets for Andy Borowitz's next live show are now on sale.", "")
-    article[3] = article[3].replace("(Satire from The Borowitz Report)", "")
-    article[3] = article[3].replace("Illustration by Andy Borowitz.", "")
-    article[3] = article[3].replace("Andy Borowitz will be doing two shows at next month's New Yorker Festival: Friday, October 5th, with the storytelling group The Moth, and Saturday, October 6th, with Sarah Silverman. Ticket information here.", "")
-    article[3] = article[3].replace("A small number of tickets have just been released for Andy Borowitz's New Yorker Festival show this Friday night in New York City. Buy tickets here.", "")
-    article[3] = article[3].replace("(Satire from The Borowitz Report)", "")
-    article[3] = article[3].replace("Tickets for Andy Borowitz's next live show are now on sale.  Photograph by Alex Wong/Getty.", "")
-    article[3] = article[3].replace("Tickets for Andy Borowitz's next live show are now on sale.      Illustration by Tom Bachtell.", "")
-    article[3] = article[3].replace("Andy Borowitz will be doing two shows at next month's New Yorker Festival: Friday, October 5th, with the storytelling group The Moth, and Saturday, October 6th, with Sarah Silverman. Ticket information here.    Photograph by Tony Avelar/Bloomberg/Getty Images.", "")
-    article[3] = article[3].replace("(The Borowitz Report)", "")
-    article[3] = article[3].replace("Tickets for Andy Borowitz's next live show are now on sale.  Photograph by Chris Maddaloni/CQ Roll Call.", "")
-    article[3] = article[3].replace("(Satire from The Borowitz Report)", "")
-    article[3] = article[3].replace('"', "").replace("'",'').replace('“','').replace('”','').replace("’",'').replace('-',' ').replace('--',' ').replace('—',' ').replace('…',' ')
 
 with open('final_borowitz.json', 'w') as fp:
     json.dump(d, fp)

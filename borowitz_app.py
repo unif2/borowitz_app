@@ -48,8 +48,8 @@ def get_onion_text(page_url):
     for things in stuff:
         blah = things.text.strip()
         article_text += blah + ' '
-    article_text = "".join((char for char in article_text if char not in string.punctuation))
-    article_text = article_text.replace('"', "").replace("'",'').replace('“','').replace('”','').replace("’",'').replace('-',' ').replace('--',' ').replace('—',' ').replace('…',' ')
+    article_text = "".join((char.lower() for char in article_text if char not in string.punctuation))
+    article_text = article_text.replace('"', " ").replace("'",'').replace('“',' ').replace('”',' ').replace("’",'').replace('-',' ').replace('--',' ').replace('—',' ').replace('…',' ')
     return article_text
 
 def get_nytimes_text(page_url):
@@ -60,8 +60,8 @@ def get_nytimes_text(page_url):
     for things in stuff:
         blah = things.text.strip()
         article_text += blah + ' '
-    article_text = "".join((char for char in article_text if char not in string.punctuation))
-    article_text = article_text.replace('"', "").replace("'",'').replace('“','').replace('”','').replace("’",'').replace('-',' ').replace('--',' ').replace('—',' ').replace('…',' ')
+    article_text = "".join((char.lower() for char in article_text if char not in string.punctuation))
+    article_text = article_text.replace('"', " ").replace("'",'').replace('“',' ').replace('”',' ').replace("’",'').replace('-',' ').replace('--',' ').replace('—',' ').replace('…',' ')
     return article_text
 
 def find_similar_borowitz(new_text):
