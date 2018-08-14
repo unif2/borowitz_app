@@ -118,7 +118,7 @@ if not_scraped:
 # If there are new articles, prepend the data to past_articles and write everything to json file
 if d:
     d.extend(past_articles)
-    with open('/home/velocci/mysite/final_borowitz.json', 'w') as fp:
+    with open('final_borowitz.json', 'w') as fp:
         json.dump(d, fp)
     fp.close
 else:
