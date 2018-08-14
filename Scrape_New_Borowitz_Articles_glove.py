@@ -90,7 +90,7 @@ def text_scraper(link):
     soup = BeautifulSoup(page, "html.parser")
     article_text = soup.find("div", attrs={"id":"articleBody"}).text
     article_text = article_clean(article_text)
-    article_text = [x.lower() for x in article[3].split() if x.lower() not in stop_words]
+    article_text = [x.lower() for x in article_text.split() if x.lower() not in stop_words]
     title = soup.find('title').text
     date = soup.find('p', attrs={'class':"ArticleTimestamp__timestamp___1klks "}).text
     return [title, date, url, article_text]
@@ -122,7 +122,7 @@ if not_scraped:
 # If there are new articles, prepend the data to past_articles and write everything to json file
 if d:
     d.extend(past_articles)
-    with open('/home/velocci/mysite/final_borowitz_word2vec.json', 'w') as fp:
+    with open('/home/velocci/mysite/final_borowitz_glove.json', 'w') as fp:
         json.dump(d, fp)
     fp.close
 else:
