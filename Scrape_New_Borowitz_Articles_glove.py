@@ -3,42 +3,55 @@ from time import sleep
 import json
 import sys
 from urllib.request import urlopen
+import nltk
 import string
 
 sys.setrecursionlimit(100000)
 
-# Current number of pages of Borowitz Reports
-num_pages = 94
+stop_words = stopwords.words('english')
 
-# First page
-base_url = 'https://www.newyorker.com/humor/borowitz-report'
+# Load the JSON with past article data
+with open('final_borowitz_glove.json', 'r') as fp:
+    past_articles = json.load(fp)
+fp.close()
 
-# All subsequent pages
+# Most recent article is the one at the top of the list.  Article link is the third entry.
+most_recent_article_url = past_articles[0][2]
+
 base_url_page = 'https://www.newyorker.com/humor/borowitz-report/page/'
-urls = [base_url_page + str(i) for i in range(2,num_pages+1)]
 
-# Here is our list of page URLs
-page_urls = [base_url]
-page_urls.extend(urls)
+# This block of code scrapes the unique URL portion specific to each article on each page and stores them in links and
+# stops when it scrapes a link that's already in the json file
 
-# This block of code scrapes the unique URL portion specific to each article on each page and stores them in links
-links = []
-print('Scraping all article link addresses')
-for url in page_urls:
-    sleep(0.1)
-    page = urlopen(url)
-    soup = BeautifulSoup(page, "html.parser")
-    #stuff = soup.find_all("a", attrs={"class":"Link__link___3dWao  "})
-    stuff2 = soup.find_all('li', attrs={"class":"River__riverItem___3huWr"})
-    things = []
-    for blah in stuff2:
-        if blah.find_next("h4"):
-            things.append(blah.find_all("a", attrs={"class":"Link__link___3dWao"}))
+def link_scraper(base_url_page):
+    print('Scraping all new article link addresses.')
+    i=1
+    links = []
+    full_link = ''
+    while full_link != most_recent_article_url:
+        sleep(0.1)
+        page = urlopen(base_url_page+str(i))
+        soup = BeautifulSoup(page, "html.parser")
+        #stuff = soup.find_all("a", attrs={"class":"Link__link___3dWao  "})
+        stuff2 = soup.find_all('li', attrs={"class":"River__riverItem___3huWr"})
+        things = []
+        for blah in stuff2:
+            if blah.find_next("h4"):
+                things.append(blah.find_all("a", attrs={"class":"Link__link___3dWao"}))
 
-    for thing in things:
-        links.append(thing[0].findNext({"a":"href"}).get('href'))
-
-print('Done.')
+        for thing in things:
+            link = thing[0].findNext({"a":"href"}).get('href')
+            full_link = 'https://www.newyorker.com'+link
+            if full_link == most_recent_article_url:
+                if links:
+                    print('Done. %d new links found.' %len(links))
+                else:
+                    print('Done. No new links found.')
+                return links
+            else:
+                links.append(link)
+        full_link = 'https://www.newyorker.com'+links[-1]
+        i += 1
 
 # Clean up the article text for each article
 
@@ -69,7 +82,7 @@ def article_clean(article):
     article = article.replace('"', " ").replace("'",'').replace('“',' ').replace('”',' ').replace("’",'').replace('-',' ').replace('--',' ').replace('—',' ').replace('…',' ')
     article = "".join((char.lower() for char in article if char not in string.punctuation))
     return article
-
+        
 # This function scrapes the article text, article title, and article date for an article
 def text_scraper(link):
     url = 'https://www.newyorker.com'+link
@@ -77,6 +90,7 @@ def text_scraper(link):
     soup = BeautifulSoup(page, "html.parser")
     article_text = soup.find("div", attrs={"id":"articleBody"}).text
     article_text = article_clean(article_text)
+    article_text = [x.lower() for x in article[3].split() if x.lower() not in stop_words]
     title = soup.find('title').text
     date = soup.find('p', attrs={'class':"ArticleTimestamp__timestamp___1klks "}).text
     return [title, date, url, article_text]
@@ -86,6 +100,8 @@ d = []
 
 # If a hiccup occurs (i.e., if a request was blocked), store the link that caused it in not_scraped
 not_scraped = []
+
+links = link_scraper(base_url_page)
 
 for link in links:
     print('Scraping stuff from link %s' %link)
@@ -103,7 +119,11 @@ if not_scraped:
         sleep(2)
         d.append(text_scraper(link))
 
-with open('final_borowitz.json', 'w') as fp:
-    json.dump(d, fp)
-
-fp.close()
+# If there are new articles, prepend the data to past_articles and write everything to json file
+if d:
+    d.extend(past_articles)
+    with open('/home/velocci/mysite/final_borowitz_word2vec.json', 'w') as fp:
+        json.dump(d, fp)
+    fp.close
+else:
+    print('No new articles.')
