@@ -3,7 +3,7 @@ from time import sleep
 import json
 import sys
 from urllib.request import urlopen
-import nltk
+from nltk.corpus import stopwords
 import string
 
 sys.setrecursionlimit(100000)
