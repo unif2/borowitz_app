@@ -12,15 +12,18 @@ from sklearn.metrics.pairwise import cosine_similarity
 import webbrowser
 #import os
 
-stop_words = ['i','me','my','myself','we','our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself',
-	'she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this',
-	'that','these','those','am','is','are','was','were','be','been','being','have','has','had','having','do','does','did',
-	'doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against',
-	'between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under',
-	'again','further','then','once','here','there','when','where','why','how','all','any','both','each','few','more','most',
-	'other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','just','don',
-	'should','now','d','ll','m','o','re','ve','y','ain','aren','couldn','didn','doesn','hadn','hasn','haven','isn','ma','mightn',
-	'mustn','needn','shan','shouldn','wasn','weren','won','wouldn','said','mr', 'obama', 'would', 'president']
+stop_words = ['i','me','my','myself','we','our','ours','ourselves','you',"you're","you've","you'll","you'd",'your','yours','yourself',
+ 'yourselves','he','him','his','himself','she',"she's",'her','hers','herself','it',"it's",'its','itself','they',
+ 'them','their','theirs','themselves','what','which','who','whom','this','that',"that'll",'these','those','am',
+ 'is','are','was','were','be','been','being','have','has','had','having','do','does','did','doing','a','an','the','and','but',
+ 'if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through',
+ 'during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again',
+ 'further','then','once','here','there','when','where','why','how','all','any','both','each','few','more','most',
+ 'other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','just',
+ 'don',"don't",'should',"should've",'now','d','ll','m','o','re','ve','y','ain','aren',"aren't",'couldn',"couldn't",
+ 'didn',"didn't",'doesn',"doesn't",'hadn',"hadn't",'hasn',"hasn't",'haven',"haven't",'isn',"isn't",'ma','mightn',
+ "mightn't",'mustn',"mustn't",'needn',"needn't",'shan',"shan't",'shouldn',"shouldn't",'wasn',"wasn't",'weren',
+ "weren't",'won',"won't",'wouldn',"wouldn't",'would','said']
 
 def load_borowitz():
     with open('final_borowitz.json', 'r') as fp:
@@ -109,6 +112,8 @@ def my_form():
 @app.route('/', methods=['POST'])
 def my_form_post():
 	text = request.form['text']
+	if not [x.lower() for x in text.split() if x.lower() not in stop_words]:
+		return "You only entered stop words!  Please try again."
 	#if text == 'stop':
 	#	break
 	title1, url1, title2, url2, first, second = find_similar_borowitz(which_newspaper(text))

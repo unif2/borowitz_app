@@ -9,6 +9,7 @@ import string
 sys.setrecursionlimit(100000)
 
 stop_words = stopwords.words('english')
+stop_words.extend(['would','said'])
 
 # Load the JSON with past article data
 with open('final_borowitz_glove.json', 'r') as fp:

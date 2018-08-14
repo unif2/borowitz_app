@@ -13,6 +13,7 @@ import webbrowser
 #import os
 
 stop_words = stopwords.words('english')
+stop_words.extend(['would','said'])
 
 with open('glove_dictionaries.pickle', 'rb') as f:
     glove_dict = pickle.load(f)
@@ -116,6 +117,8 @@ def my_form():
 @app.route('/', methods=['POST'])
 def my_form_post():
 	text = request.form['text']
+	if not [x.lower() for x in text.split() if x.lower() not in stop_words]:
+		return "You only entered stop words!  Please try again."
 	#if text == 'stop':
 	#	break
 	title1, url1, title2, url2, first, second = find_similar_borowitz(which_newspaper(text))
@@ -123,7 +126,6 @@ def my_form_post():
 	#topics = [sorted(model.show_topic(i, topn=10), key=lambda x: x[1], reverse=True) [:10] for i in range(100)]
 	topic1 = max(lda_docs[first], key=lambda x: x[1])[0]
 	topic2 = max(lda_docs[second], key=lambda x: x[1])[0]
-
 	important = [topics[topic1][i][0] for i in range(len(topics[topic1]))]
 	second_important = [topics[topic2][i][0] for i in range(len(topics[topic2]))]
 	result_best1 = "Best match title: %s <br/><br/>Most important LDA topic composed of: <br/>" %title1
@@ -136,7 +138,6 @@ def my_form_post():
 	#return '<a href="{0}">{1}</a>'.format(url,title)
 	
 	#<a href=url>http://stackoverflow.com</a>
-	
 	webbrowser.open_new_tab(url1)
 	webbrowser.open_new_tab(url2)
 	return result_best1 + result_best2 + result_second_best1 + result_second_best2
